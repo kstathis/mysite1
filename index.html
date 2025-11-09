@@ -144,16 +144,16 @@
         <h2>Navigation</h2>
         <nav>
             <ul class="nav-list">
-                <!-- Topic 1 -->
+                <!-- ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● -->
                 <li class="nav-topic">
-                    <a href="#topic1" class="topic-link" data-topic="topic1">Topic 1: Introduction</a>
+                    <a href="#topic1" class="topic-link" data-topic="topic1">Splunk</a>
                     <ul class="sub-topics" id="sub-topics-topic1">
-                        <li><a href="#topic1-sub1" class="sub-topic-link">Sub-Topic 1.1</a></li>
+                        <li><a href="#topic1-sub1" class="sub-topic-link">btool</a></li>
                         <li><a href="#topic1-sub2" class="sub-topic-link">Sub-Topic 1.2</a></li>
                         <li><a href="#topic1-sub3" class="sub-topic-link">Sub-Topic 1.3</a></li>
                     </ul>
                 </li>
-                <!-- Topic 2 -->
+                <!-- ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● -->
                 <li class="nav-topic">
                     <a href="#topic2" class="topic-link" data-topic="topic2">Topic 2: Core Concepts</a>
                     <ul class="sub-topics" id="sub-topics-topic2">
@@ -162,7 +162,7 @@
                         <li><a href="#topic2-sub3" class="sub-topic-link">Sub-Topic 2.3</a></li>
                     </ul>
                 </li>
-                <!-- Topic 3 -->
+                <!-- ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● -->
                 <li class="nav-topic">
                     <a href="#topic3" class="topic-link" data-topic="topic3">Topic 3: Advanced Methods</a>
                     <ul class="sub-topics" id="sub-topics-topic3">
@@ -207,15 +207,148 @@
 
         <!-- Topic 1 Section -->
         <section id="topic1" class="section">
-            <h2>Topic 1: Introduction</h2>
+            <h2>Splunk</h2>
             <div id="topic1-sub1" class="sub-section">
-                <h3>Sub-Topic 1.1</h3>
+                <h3>btool</h3>
 <span>
 <embed src="files/doc/01.pdf" width="70%" height="600" type="application/pdf"></span>
 <span>
 <img src="files/images/01.png" alt="HTML5 Icon" style="width:50%;height:50%;"></span>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Integer id velit.</p>
+            <pre>
+
+                
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+btool the AAAA conf file and search for the BBBB key. Show the stanza, under which, BBBB is.
+
+
+$lines = $(cls ; cd $env:SPLUNK_HOME\bin ; .\splunk.exe cmd btool AAAA list --debug) ; `
+$last_stanza = $null ; `
+$lines | ForEach-Object -Process { $currentLine = $_ ; `
+$currentLineNumber = $_.PSObject.Properties['LineNumber'].Value ; if ($currentLine -match "BBBB") { `
+if ($last_stanza) { $last_stanza } $currentLine ;} if ($currentLine -match "\[") { $last_stanza = $currentLine } }
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+cls ; `
+cd $env:SPLUNK_HOME\bin ; `
+.\splunk.exe btool server list --debug | sls -Pattern "\\local\\" | sls -Pattern "(pass4SymmKey =)|(sslPassword =)"; `
+echo "" ; `
+.\splunk.exe btool server list --debug | sls -Pattern "\\default\\" | sls -Pattern "(pass4SymmKey =)|(sslPassword =)"; `
+"-"*60 ; `
+$the_file = (gci $env:SPLUNK_HOME\etc\system\default\ server.conf).FullName ; `
+foreach ($x in $the_file){echo "" $x "" ""; Get-Content $x |  Select-String -Pattern '(pass4SymmKey =)|(sslPassword =)' ; echo "---"} ; `
+echo "pass4SymmKey" ; `
+.\splunk.exe show-decrypted --value $($(.\splunk.exe btool server list --debug | sls -Pattern "\\local\\" | sls -Pattern "pass4SymmKey") -split "pass4SymmKey = ")[1] ; `
+echo "" "sslPassword" ; `
+.\splunk.exe show-decrypted $($(.\splunk.exe btool server list --debug | sls -Pattern "\\local\\" | sls -Pattern "sslPassword") -split "sslPassword = ")[1]
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+cls ; `
+cd $env:SPLUNK_HOME\bin ; `
+.\splunk.exe btool server list default --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool server list default --debug | Select-String -Pattern '\\default\\'; `
+'-'*60 ; `
+.\splunk.exe btool server list general --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool server list general --debug | Select-String -Pattern '\\default\\'; `
+'-'*60 ; `
+.\splunk.exe btool server list sslConfig --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool server list sslConfig --debug | Select-String -Pattern '\\default\\'; `
+'-'*60
+
+
+
+cls ; `
+cd $env:SPLUNK_HOME\bin ; `
+.\splunk.exe btool server list --debug | Select-String -Pattern 'ssl|cert|key|check' ; `
+'-'*60
+
+
+
+
+
+cls ; `
+cd $env:SPLUNK_HOME\bin ; `
+.\splunk.exe btool web list settings --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool web list settings --debug | Select-String -Pattern '\\default\\'; `
+'-'*60
+
+
+
+cls ; `
+cd $env:SPLUNK_HOME\bin ; `
+.\splunk.exe btool web list --debug | Select-String -Pattern 'ssl|cert|key|check' ; `
+'-'*60
+
+
+
+
+
+cls ; `
+cd $env:SPLUNK_HOME\bin ; `
+.\splunk.exe btool inputs list default --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool inputs list default --debug | Select-String -Pattern '\\default\\'; `
+'-'*60 ; `
+.\splunk.exe btool inputs list splunktcp --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool inputs list splunktcp --debug | Select-String -Pattern '\\default\\'; `
+'-'*60 ; `
+.\splunk.exe btool inputs list splunktcp-ssl --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool inputs list splunktcp-ssl --debug | Select-String -Pattern '\\default\\'; `
+'-'*60 
+
+
+
+
+cls ; `
+cd $env:SPLUNK_HOME\bin ; `
+.\splunk.exe btool inputs list --debug | Select-String -Pattern 'ssl|cert|key|check' ; `
+'-'*60
+
+
+
+
+cls ; `
+cd $env:SPLUNK_HOME\bin ; `
+.\splunk.exe btool outputs list default --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool outputs list default --debug | Select-String -Pattern '\\default\\'; `
+'-'*60 ; `
+.\splunk.exe btool outputs list tcpout --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool outputs list tcpout --debug | Select-String -Pattern '\\default\\'; `
+'-'*60 ; `
+.\splunk.exe btool outputs list tcpout-server --debug | Select-String -Pattern '\\local\\'; `
+'-'*60 ; `
+.\splunk.exe btool outputs list tcpout-server --debug | Select-String -Pattern '\\default\\'; `
+'-'*60
+
+
+cls ; `
+cd $env:SPLUNK_HOME\bin ; `
+.\splunk.exe btool outputs list --debug | Select-String -Pattern 'ssl|cert|key|check' ; `
+'-'*60
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+                
+            </pre>    
+            
             </div>
             <div id="topic1-sub2" class="sub-section">
                 <h3>Sub-Topic 1.2</h3>
